@@ -1,0 +1,54 @@
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: pg-optimizer
+    environment:
+      POSTGRES_DB: optimizer
+      POSTGRES_USER: optimizer
+      POSTGRES_PASSWORD: optimizer
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U optimizer -d optimizer"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: ProviderOptimizerService.API/Dockerfile
+    container_name: provider-optimizer-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Ajusta estas variables a tu configuración
+      ASPNETCORE_ENVIRONMENT: "Development"
+      # Provider usado por Infrastructure
+      Database__Provider: "postgres"
+      # Connection string que la API utiliza (Program.cs lee "ConnectionStrings:Default")
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=optimizer;Username=optimizer;Password=optimizer"
+    ports:
+      - "8080:8080"   # http://localhost:8080/swagger
+
+  # pgadmin:
+  #   image: dpage/pgadmin4:8
+  #   container_name: pgadmin
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@local
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - "5050:80"
+  #   depends_on:
+  #     - postgres
+  #   # Para conectar desde pgAdmin a Postgres usausar:
+  #   # Host: postgres   | Port: 5432
+  #   # User: optimizer  | Pass: optimizer
+  #   # DB: optimizer
+
+volumes:
+  pgdata:

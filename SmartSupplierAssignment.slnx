@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/ProviderOptimizerService/" />
+  <Folder Name="/ProviderOptimizerService/API/">
+    <Project Path="ProviderOptimizerService.API/ProviderOptimizerService.API.csproj" />
+  </Folder>
+  <Folder Name="/ProviderOptimizerService/Application/">
+    <Project Path="ProviderOptimizerService.Application/ProviderOptimizerService.Application.csproj" />
+  </Folder>
+  <Folder Name="/ProviderOptimizerService/Domain/">
+    <Project Path="ProviderOptimizerService.Infrastructure.Domain/ProviderOptimizerService..Domain.csproj" />
+  </Folder>
+  <Folder Name="/ProviderOptimizerService/Infrastructure/">
+    <Project Path="ProviderOptimizerService.Infrastructure/ProviderOptimizerService.Infrastructure.csproj" />
+  </Folder>
+</Solution>

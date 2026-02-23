@@ -1,0 +1,20 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/*.user
+**/*.suo
+**/*.sln.docstates
+**/*.csproj.user
+**/*.ncrunchsolution
+**/*.ncrunchproject
+
+# Node / front (si tienes algo de UI)
+**/node_modules/
+
+# Publicaciones previas
+**/publish/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db

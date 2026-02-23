@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Swagger: habilitar lectura de comentarios XML -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Evitar warnings 1591 (faltan comentarios públicos) -->
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <!-- Asegurar latest C# -->
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <!-- Paquetes NuGet -->
+  <ItemGroup>
+    <!-- Paquete meta de Swashbuckle (incluye Swagger/Gen/UI) -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
+  </ItemGroup>
+
+  <!-- Referencias a otros proyectos de la solución -->
+  <ItemGroup>
+    <ProjectReference Include="..\ProviderOptimizerService.Application\ProviderOptimizerService.Application.csproj" />
+    <ProjectReference Include="..\ProviderOptimizerService.Infrastructure\ProviderOptimizerService.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <!-- Asegúrate de NO tener archivos fuente linkados desde otros proyectos (evita tipos duplicados) -->
+  <!--
+  <ItemGroup>
+    <Compile Remove="..\ProviderOptimizerService.Application\**\*.cs" />
+    <Compile Remove="..\ProviderOptimizerService.Domain\**\*.cs" />
+    <Compile Remove="..\ProviderOptimizerService.Infrastructure\**\*.cs" />
+  </ItemGroup>
+  -->
+
+</Project>
