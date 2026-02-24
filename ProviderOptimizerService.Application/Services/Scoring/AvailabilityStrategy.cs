@@ -10,6 +10,9 @@ namespace ProviderOptimizerService.Application.Services.Scoring
 		public string Name => "availability";
 		public double Weight { get; }
 		public double Score(Provider provider, AssistanceRequest context, IList<ScoreDetail> _)
-			=> (provider.IsAvailable && provider.Supports(context.ServiceType) && provider.Covers(context.Location)) ? 1.0 : 0.0;
+		{
+			// El repositorio YA filtró por ServiceType => aquí sólo validamos disponibilidad y cobertura.
+			return (provider.IsAvailable && provider.Covers(context.Location)) ? 1.0 : 0.0;
+		}
 	}
 }

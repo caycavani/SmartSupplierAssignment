@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="NuGet.config" />
+  </Folder>
   <Folder Name="/ProviderOptimizerService/" />
   <Folder Name="/ProviderOptimizerService/API/">
     <Project Path="ProviderOptimizerService.API/ProviderOptimizerService.API.csproj" />
@@ -11,5 +14,8 @@
   </Folder>
   <Folder Name="/ProviderOptimizerService/Infrastructure/">
     <Project Path="ProviderOptimizerService.Infrastructure/ProviderOptimizerService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/ProviderOptimizerService/Tests/">
+    <Project Path="ProviderOptimizerService.IntegrationTests/ProviderOptimizerService.IntegrationTests.csproj" />
   </Folder>
 </Solution>

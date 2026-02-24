@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- Fuerza a copiar TODAS las dependencias del lockfile al bin del test runner -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Unit + Integration -->
+    <PackageReference Include="Castle.Core" Version="5.1.1" />
+    <PackageReference Include="xunit" Version="2.7.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Moq" Version="4.20.70" />
+
+    <!-- Integration -->
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Referencias a proyectos de la solución (ajusta rutas si tu layout difiere) -->
+    <ProjectReference Include="..\ProviderOptimizerService.API\ProviderOptimizerService.API.csproj" />
+    <ProjectReference Include="..\ProviderOptimizerService.Infrastructure\ProviderOptimizerService.Infrastructure.csproj" />
+    <ProjectReference Include="..\ProviderOptimizerService.Application\ProviderOptimizerService.Application.csproj" />
+  
+  </ItemGroup>
+
+  <!-- En caso de que accidentalmente se hayan “copiado” fuentes de otras capas dentro de este proyecto,
+       descomenta lo siguiente para asegurarte de que NO se compilen aquí. -->
+  <!--
+  <ItemGroup>
+    <Compile Remove="Application\**\*.cs" />
+    <Compile Remove="Domain\**\*.cs" />
+    <None Include="Application\**\*" Exclude="**\bin\**;**\obj\**" />
+    <None Include="Domain\**\*" Exclude="**\bin\**;**\obj\**" />
+  </ItemGroup>
+  -->
+
+</Project>

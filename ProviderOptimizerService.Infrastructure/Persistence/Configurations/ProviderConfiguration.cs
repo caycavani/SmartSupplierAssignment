@@ -13,20 +13,23 @@ namespace ProviderOptimizerService.Infrastructure.Persistence.Configurations
 
 			b.HasKey(p => p.Id);
 			b.Property(p => p.Id).HasColumnName("id");
-
 			b.Property(p => p.Name).HasColumnName("name").HasMaxLength(200).IsRequired();
 			b.Property(p => p.IsAvailable).HasColumnName("is_available").IsRequired();
 			b.Property(p => p.Rating).HasColumnName("rating").IsRequired();
 			b.Property(p => p.CostPerKm).HasColumnName("cost_per_km").IsRequired();
 			b.Property(p => p.CoverageRadiusKm).HasColumnName("coverage_radius_km").IsRequired();
 
-			// GeoPoint (record struct)
+			// GeoPoint
 			b.ComplexProperty(p => p.CurrentLocation, nav =>
 			{
 				nav.Property(x => x.Lat).HasColumnName("lat").IsRequired();
 				nav.Property(x => x.Lng).HasColumnName("lng").IsRequired();
 			});
 
+			// ⬅️ EF no debe mapear la colección primitiva (HashSet<ServiceType>)
+			b.Ignore(p => p.Capabilities);
+
+			// Relación con la tabla puente explícita
 			b.HasMany<ProviderCapability>()
 			 .WithOne()
 			 .HasForeignKey(pc => pc.ProviderId)

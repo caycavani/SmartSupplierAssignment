@@ -1,18 +1,18 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-using ProviderOptimizerService.API;                 // AddApplicationLayer()
-using ProviderOptimizerService.Infrastructure;      // AddInfrastructure()
-using ProviderOptimizerService.Infrastructure.Seed; // DataSeeder
+using ProviderOptimizerService.API;
+using ProviderOptimizerService.Infrastructure;
+using ProviderOptimizerService.Infrastructure.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ===================
-//   CONFIGURACI�N
+//   CONFIGURACIÓN
 // ===================
 builder.Configuration
 	.AddJsonFile("appsettings.json", optional: true)
@@ -30,9 +30,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllers()
 	.AddJsonOptions(options =>
 	{
-		// Opcional:
-		// options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-		// options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+		
 	});
 
 // ===================
@@ -45,29 +43,39 @@ builder.Services.AddSwaggerGen(c =>
 	{
 		Title = "Provider Optimizer Service API",
 		Version = "v1",
-		Description = "Microservicio cr�tico: ProviderOptimizerService (Clean/Hexagonal, Outbox, Idempotencia)."
+		Description = "Microservicio crítico: ProviderOptimizerService (Clean/Hexagonal, Outbox, Idempotencia)."
 	});
 
-	// XML comments (requiere <GenerateDocumentationFile>true</GenerateDocumentationFile> en csproj)
+	// XML comments (requiere <GenerateDocumentationFile>true</GenerateDocumentationFile> en el .csproj)
 	var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 	var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 	if (File.Exists(xmlPath))
 		c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
 });
 
-
-
-// (Opcional) CORS / Auth / RateLimit
-// builder.Services.AddCors(...);
-// builder.Services.AddAuthentication(...);
-// builder.Services.AddAuthorization(...);
-
 var app = builder.Build();
 
 // ===================
 //  DB MIGRATION & SEED
 // ===================
-await DataSeeder.SeedAsync(app.Services);
+// Regla: ejecuta Seed en Development o si SEED_ON_START=true (útil para ambientes de prueba)
+var runSeed =
+	app.Environment.IsDevelopment() ||
+	string.Equals(Environment.GetEnvironmentVariable("SEED_ON_START"), "true", StringComparison.OrdinalIgnoreCase);
+
+if (runSeed)
+{
+	try
+	{
+		await DataSeeder.SeedAsync(app.Services);
+	}
+	catch (Exception ex)
+	{
+		// No tumbar el host si algo falla en migración/seed
+		var logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+		logger.LogError(ex, "Fallo durante DB Migration & Seed (la API continúa ejecutándose).");
+	}
+}
 
 // ===================
 //       PIPELINE
@@ -86,6 +94,13 @@ if (app.Environment.IsDevelopment())
 // app.UseAuthentication();
 // app.UseAuthorization();
 
+// Endpoints básicos
 app.MapControllers();
 
+// Health (para checks en Docker/Orquestador)
+app.MapGet("/health", () => Results.Ok(new { status = "OK", env = app.Environment.EnvironmentName }));
+
 app.Run();
+
+// 👇 Necesaria para WebApplicationFactory<Program> en tests de integración
+public partial class Program { }
